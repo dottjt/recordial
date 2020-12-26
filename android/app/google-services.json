@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "471856436906",
+    "project_id": "music-reade-id",
+    "storage_bucket": "music-reade-id.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471856436906:android:68680b6fd64de957d1e2d3",
+        "android_client_info": {
+          "package_name": "com.reade.music"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471856436906-bvnenmrsvocplmak6dlo4uk9giskui8f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnbBJML_XufObkGRzxmSNtu2tugqd9NHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471856436906-bvnenmrsvocplmak6dlo4uk9giskui8f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
