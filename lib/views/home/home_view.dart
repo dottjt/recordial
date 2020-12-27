@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:music/components/song_list.dart';
 
 import 'home_navigation_bar.dart';
 import '../../navigation/recording_navigation_floating_action_button.dart';
-
 import '../song/song_view.dart';
 
 // import '../models/song_model.dart';
@@ -27,7 +27,12 @@ class _HomeViewState extends State<HomeView> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Text('yolo'),
+        child: Column(
+          children: [
+            Text('hi', style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.end),
+            SongList(),
+          ],
+        )
       ),
       bottomNavigationBar: RecordingNavigationBar(recorder: _recorder),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -44,3 +49,4 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+
