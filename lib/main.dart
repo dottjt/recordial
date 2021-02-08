@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:music/views/home_loading_view/home_loading_view.dart';
 import 'package:music/views/home_error_view/home_error_view.dart';
+import 'package:provider/provider.dart';
 
 import 'app.dart';
+import 'models/song_model.dart';
 import 'views/home/home_view.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,7 +12,13 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(AppInitialize());
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => SongModel(),
+      child: AppInitialize(),
+    ),
+  );
 }
 
 class AppInitialize extends StatelessWidget {
@@ -28,6 +36,7 @@ class AppInitialize extends StatelessWidget {
 
         if (snapshot.connectionState == ConnectionState.done) {
           FirebaseFirestore.instance.settings = Settings(
+              persistenceEnabled: true,
               cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED
           );
 

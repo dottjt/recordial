@@ -1,65 +1,115 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-// class Song {
-//   final String sender;
-
-//   Song(this.sender);
-// }
-
+import 'package:uuid/uuid.dart';
 class SongModel extends ChangeNotifier {
   CollectionReference _songs = FirebaseFirestore.instance.collection('songs');
 
-  String _selectedSongId;
+  var _allSongs = [];
+  var _selectedSong;
+  var _selectedRecording;
+  // var _selectedLyric;
 
-  // GET
-  // int get getSongs {
-  get getSongs {
-    return _songs;
-  }
-
-  get getSelectedSong {
-    return _selectedSongId;
-  }
-
-  void updateSelectedSongId(String selectedSongId) {
-    _selectedSongId = selectedSongId;
+  Future<QuerySnapshot> retrieveSongs() async {
+    QuerySnapshot querySnapshot = await _songs.get();
+    print(querySnapshot.docs);
+    print('querySnapshot.docs');
+    _allSongs = querySnapshot.docs;
     notifyListeners();
+    
+    return querySnapshot;
   }
 
-  // Future<void> getSong(documentId) {
-  //   return _songs.doc(documentId).get();
-  // }
+  get getAllSongs { return _allSongs; }
+  get getSelectedSong { return _selectedSong; }
 
-  Future<void> addSong({ String name }) {
+  Future<Map<String, dynamic>> selectSong({ String songId }) async {
+    var song = await _songs.doc(songId).get();
+
+    // _selectedSong = song;
+    // notifyListeners();
+
+    return song.data();
+  }
+
+  Future<void> addSong({ String title }) {
+    final Map<String, dynamic> songMap = {
+      'title': title,
+      'recordings': [],
+      'lyrics': [
+        { 'text': '' }
+      ]
+    };
+
     return _songs
-      .add({
-        'name': name, // John Doe
+      .add(songMap)
+      .then((value) {
+        print("Song Added: ${value.id}");
+        _selectedSong = value;
+        notifyListeners();
       })
-      .then((value) => print("Song Added"))
       .catchError((error) => print("Failed to add song: $error"));
   }
 
-  Future<void> updateSong({ String songId, String name }) {
+  Future<void> updateSong({ String songId, String title }) {
     return _songs
-      .doc(songId)
+      .doc(_selectedSong.id)
       .update({
-        'name': name
+        'title': title
       })
-      // .update({'info.address.zipcode': 90210}) // update deeply nested.
-      .then((value) => print("Song Updated"))
+      .then((value) {
+        print("Song Updated");
+        _selectedSong = {
+          ..._selectedSong,
+          'title': title
+        };
+      })
       .catchError((error) => print("Failed to update song: $error"));
   }
 
   Future<void> deleteSong({ String songId }) {
     return _songs
-      .doc(songId)
+      .doc(_selectedSong.id)
       .delete()
       .then((value) => print("Song Deleted"))
       .catchError((error) => print("Failed to delete song: $error"));
   }
+
+  // RECORDINGS
+
+  Future<void> addSongRecording({ recording }) {
+    var uuid = Uuid();
+    uuid.v4();
+
+    return _songs
+      .doc(_selectedSong.id)
+      .update({
+        'recordings': FieldValue.arrayUnion(recording),
+      })
+      .then((value) {
+        print("Recording Added");
+
+        _selectedRecording = recording;
+        notifyListeners();
+      })
+      .catchError((error) => print("Failed to add recording: $error"));
+  }
+
+  Future<void> deleteSongRecording({ recording }) {
+    // ensure this is the entire recording.
+    return _songs
+      .doc(_selectedSong.id)
+      .update({
+        'recordings': FieldValue.arrayRemove(recording),
+      })
+      .then((value) => print("Recording delete"))
+      .catchError((error) => print("Failed to delete recording: $error"));
+  }
+
+
 
   // void removeSong() {
   //   _count += 1;

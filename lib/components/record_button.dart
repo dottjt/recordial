@@ -7,7 +7,7 @@ class OpenPainter extends CustomPainter {
       ..color = Color.fromRGBO(235, 52, 52, 1.0)
       ..style = PaintingStyle.fill;
     //a circle
-    canvas.drawCircle(Offset(200, 200), 100, paint1);
+    // canvas.drawCircle(Offset(200, 200), 100, paint1);
   }
 
   @override
